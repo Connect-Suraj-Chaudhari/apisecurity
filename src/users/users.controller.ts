@@ -14,15 +14,13 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserRoles } from '../user-roles.enum';
 import { Roles } from '../auth/roles.decorators';
 import { RolesGuard } from '../auth/role-auth.guard';
-import { LocalAuthGuard } from '../auth/local-auth.guard';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @UseGuards(RolesGuard)
-  @Roles(UserRoles.ADMIN , UserRoles.SUPER_ADMIN)
+  @Roles(UserRoles.ADMIN, UserRoles.SUPER_ADMIN)
   @Post('/createUser')
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
