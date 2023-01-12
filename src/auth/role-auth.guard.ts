@@ -7,28 +7,54 @@ import { Request } from 'express';
 export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
+
+//auth guard Request from header token
+
+canActivate(context: ExecutionContext): boolean {
+  const roles = this.reflector.get<UserRoles[]>(
+    'roles',
+    context.getHandler(),
+  );
+  const request = context.switchToHttp();
+  const user = request.getRequest<Request>();
+  // console.log(roles);
+  // console.log('header', user.header('roles'));
+
+  // console.log('header', user);
+  if(!roles){
+    return true;
+  }
+  if (user.header('roles') === undefined) {
+    return false;
+  }
+  let user_role: any = user.header('roles');
+  console.log(user_role);
+
+  return roles.includes(user_role);
+}
+
   //auth guard Request.from header
 
-  canActivate(context: ExecutionContext): boolean {
-    const roles = this.reflector.get<UserRoles[]>(
-      'roles',
-      context.getHandler(),
-    );
-    const request = context.switchToHttp();
-    const user = request.getRequest<Request>();
-    console.log(roles);
-    console.log('header', user.header('roles'));
-    if(!roles){
-      return true;
-    }
-    if (user.header('roles') === undefined) {
-      return false;
-    }
-    let user_role: any = user.header('roles');
-    console.log(user_role);
+  // canActivate(context: ExecutionContext): boolean {
+  //   const roles = this.reflector.get<UserRoles[]>(
+  //     'roles',
+  //     context.getHandler(),
+  //   );
+  //   const request = context.switchToHttp();
+  //   const user = request.getRequest<Request>();
+  //   console.log(roles);
+  //   console.log('header', user.header('roles'));
+  //   if(!roles){
+  //     return true;
+  //   }
+  //   if (user.header('roles') === undefined) {
+  //     return false;
+  //   }
+  //   let user_role: any = user.header('roles');
+  //   console.log(user_role);
 
-    return roles.includes(user_role);
-  }
+  //   return roles.includes(user_role);
+  // }
 
   // auth guard Request.from Body
 
